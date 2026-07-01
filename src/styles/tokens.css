@@ -1,0 +1,15 @@
+:root {
+  --lego-yellow: #ffcf00;
+  --lego-red: #e3000b;
+  --lego-blue: #0055bf;
+  --lego-green: #237841;
+  --lego-white: #ffffff;
+  --lego-black: #1a1a1a;
+  --lego-orange: #ff8c00;
+  --shadow-color: rgba(0, 0, 0, 0.25);
+  --font-display: 'Titan One', 'Fredoka', sans-serif;
+  --font-body: 'Fredoka', sans-serif;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --border-thick: 3px solid var(--lego-black);
+}
