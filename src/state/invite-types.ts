@@ -1,4 +1,4 @@
-export type Skin = 'bald' | 'light' | 'dark' | 'brown' | 'ears';
+export type Skin = 'bald' | 'light' | 'dark' | 'brown' | 'ears' | 'ginger';
 
 export type Food = 'pizza' | 'burger';
 
@@ -17,7 +17,7 @@ export type Team =
   | 'spartak'
   | 'akron'
   | 'barcelona'
-  | 'other';
+  | 'zenit';
 
 export type PhotoAnswer = 'friend' | 'unknown';
 

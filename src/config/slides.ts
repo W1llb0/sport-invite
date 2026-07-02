@@ -8,20 +8,28 @@ export function getAssetPath(relativePath: string): string {
 }
 
 export const imagePaths = {
-  photo11: getAssetPath('images/11.jpg'),
-  hockey22: getAssetPath('images/22.jpg'),
-  hockey33: getAssetPath('images/33.jpg'),
-  books44: getAssetPath('images/44.jpg'),
+  footballPhoto: getAssetPath('images/11.jpg'),
+  friendPhoto: getAssetPath('images/22.jpg'),
+  hockeyPhoto: getAssetPath('images/33.jpg'),
+  diplomaPhoto: getAssetPath('images/44.jpg'),
   party55: getAssetPath('images/55.jpg'),
   invite66: getAssetPath('images/66.jpg'),
 } as const;
 
+export const skillPhotoPaths = {
+  stick: imagePaths.hockeyPhoto,
+  ball: imagePaths.footballPhoto,
+  chess: imagePaths.diplomaPhoto,
+  books: imagePaths.diplomaPhoto,
+} as const;
+
 export const skinOptions = [
-  { id: 'bald' as const, label: 'Лысый', image: getAssetPath('assets/skins/bald.svg') },
-  { id: 'light' as const, label: 'Светлый', image: getAssetPath('assets/skins/light.svg') },
-  { id: 'dark' as const, label: 'Тёмный', image: getAssetPath('assets/skins/dark.svg') },
-  { id: 'brown' as const, label: 'Каштанчик', image: getAssetPath('assets/skins/brown.svg') },
-  { id: 'ears' as const, label: 'С ушами', image: getAssetPath('assets/skins/ears.svg') },
+  { id: 'bald' as const, label: 'Лысый', image: getAssetPath('assets/skins/bald.png') },
+  { id: 'light' as const, label: 'Светлый', image: getAssetPath('assets/skins/light.png') },
+  { id: 'dark' as const, label: 'Тёмный', image: getAssetPath('assets/skins/dark.png') },
+  { id: 'brown' as const, label: 'Каштанчик', image: getAssetPath('assets/skins/brown.png') },
+  { id: 'ears' as const, label: 'С ушами', image: getAssetPath('assets/skins/ears.png') },
+  { id: 'ginger' as const, label: 'Рыжий', image: getAssetPath('assets/skins/ginger.png') },
 ];
 
 export const foodOptions = [
@@ -46,19 +54,35 @@ export const skillOptions = [
   { id: 'books' as const, label: 'Книжки', image: getAssetPath('assets/skills/books.svg') },
 ];
 
+export const teamImages = {
+  lada: getAssetPath('assets/teams/lada.png'),
+  dynamo: getAssetPath('assets/teams/dynamo.svg'),
+  ska: getAssetPath('assets/teams/ska.svg'),
+  akm: getAssetPath('assets/teams/akm.png'),
+  real: getAssetPath('assets/teams/real.svg'),
+  spartak: getAssetPath('assets/teams/spartak.png'),
+  akron: getAssetPath('assets/teams/akron.svg'),
+  barcelona: getAssetPath('assets/teams/barcelona.svg'),
+  zenit: getAssetPath('assets/teams/zenit.svg'),
+} as const;
+
+export function getTeamImage(team: keyof typeof teamImages): string {
+  return teamImages[team];
+}
+
 export const hockeyTeamOptions = [
-  { id: 'lada' as const, label: 'Лада', image: getAssetPath('assets/teams/lada.svg') },
-  { id: 'dynamo' as const, label: 'Динамо', image: getAssetPath('assets/teams/dynamo.svg') },
-  { id: 'ska' as const, label: 'СКА', image: getAssetPath('assets/teams/ska.svg') },
-  { id: 'akm' as const, label: 'АКМ', image: getAssetPath('assets/teams/akm.svg') },
+  { id: 'lada' as const, label: 'Лада', image: teamImages.lada },
+  { id: 'dynamo' as const, label: 'Динамо', image: teamImages.dynamo },
+  { id: 'ska' as const, label: 'СКА', image: teamImages.ska },
+  { id: 'akm' as const, label: 'АКМ', image: teamImages.akm },
 ];
 
 export const footballTeamOptions = [
-  { id: 'real' as const, label: 'Реал', image: getAssetPath('assets/teams/real.svg') },
-  { id: 'spartak' as const, label: 'Спартак', image: getAssetPath('assets/teams/spartak.svg') },
-  { id: 'akron' as const, label: 'Акрон', image: getAssetPath('assets/teams/akron.svg') },
-  { id: 'barcelona' as const, label: 'Барселона', image: getAssetPath('assets/teams/barcelona.svg') },
-  { id: 'other' as const, label: 'Другое', image: getAssetPath('assets/teams/other.svg') },
+  { id: 'real' as const, label: 'Реал', image: teamImages.real },
+  { id: 'spartak' as const, label: 'Спартак', image: teamImages.spartak },
+  { id: 'akron' as const, label: 'Акрон', image: teamImages.akron },
+  { id: 'barcelona' as const, label: 'Барселона', image: teamImages.barcelona },
+  { id: 'zenit' as const, label: 'Зенит', image: teamImages.zenit },
 ];
 
 export const moodOptions = [

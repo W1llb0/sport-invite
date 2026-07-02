@@ -1,4 +1,4 @@
-import type { Dispatch } from 'react';
+import type { Dispatch, ReactElement } from 'react';
 import { SlideLayout } from '../components/slide-layout';
 import { ChoiceButtons } from '../components/choice-buttons';
 import { EmojiPicker } from '../components/emoji-picker';
@@ -13,13 +13,25 @@ import {
   skillOptions,
   skinOptions,
 } from '../config/slides';
-import { getSkillBackground } from '../config/avatar-styles';
 import type { InviteAction, InviteState } from '../state/invite-types';
 
 type SlidesRendererProps = {
   state: InviteState;
   dispatch: Dispatch<InviteAction>;
 };
+
+type SlidePhotoProps = {
+  src: string;
+  alt: string;
+};
+
+function SlidePhoto({ src, alt }: SlidePhotoProps): ReactElement {
+  return (
+    <div className="slide-image-wrap">
+      <img className="slide-image slide-image--hero" src={src} alt={alt} />
+    </div>
+  );
+}
 
 export function SlidesRenderer({ state, dispatch }: SlidesRendererProps) {
   const goNext = (): void => {
@@ -76,7 +88,7 @@ export function SlidesRenderer({ state, dispatch }: SlidesRendererProps) {
     case 3:
       return (
         <SlideLayout title="Выбери себе скин">
-          <div className="choice-grid choice-grid--5">
+          <div className="choice-grid choice-grid--6">
             {skinOptions.map((option) => (
               <button
                 key={option.id}
@@ -163,10 +175,7 @@ export function SlidesRenderer({ state, dispatch }: SlidesRendererProps) {
 
     case 7:
       return (
-        <SlideLayout
-          title="Какие скилы у тебя есть?"
-          backgroundImage={getSkillBackground(state.skill)}
-        >
+        <SlideLayout title="Какие скилы у тебя есть?">
           <div className="choice-grid choice-grid--4">
             {skillOptions.map((option) => (
               <button
@@ -186,17 +195,18 @@ export function SlidesRenderer({ state, dispatch }: SlidesRendererProps) {
         </SlideLayout>
       );
 
-    case 8:
-      return (
-        <SlideLayout title="Давай выберем твою команду">
-          <div className="team-section">
-            <p className="team-section-title">Хоккей</p>
+    case 8: {
+      const skill = state.skill ?? 'ball';
+      if (skill === 'stick') {
+        return (
+          <SlideLayout title="Выбери хоккейную команду">
+            <SlidePhoto src={imagePaths.hockeyPhoto} alt="Хоккейная команда" />
             <div className="choice-grid choice-grid--4">
               {hockeyTeamOptions.map((option) => (
                 <button
                   key={option.id}
                   type="button"
-                  className="image-choice"
+                  className="image-choice image-choice--team"
                   onClick={() => {
                     dispatch({ type: 'SET_TEAM', payload: option.id });
                     goNext();
@@ -207,15 +217,19 @@ export function SlidesRenderer({ state, dispatch }: SlidesRendererProps) {
                 </button>
               ))}
             </div>
-          </div>
-          <div className="team-section">
-            <p className="team-section-title">Футбол</p>
+          </SlideLayout>
+        );
+      }
+      if (skill === 'ball') {
+        return (
+          <SlideLayout title="Выбери футбольный клуб">
+            <SlidePhoto src={imagePaths.footballPhoto} alt="Футбольная команда" />
             <div className="choice-grid choice-grid--3">
               {footballTeamOptions.map((option) => (
                 <button
                   key={option.id}
                   type="button"
-                  className="image-choice"
+                  className="image-choice image-choice--team"
                   onClick={() => {
                     dispatch({ type: 'SET_TEAM', payload: option.id });
                     goNext();
@@ -226,9 +240,27 @@ export function SlidesRenderer({ state, dispatch }: SlidesRendererProps) {
                 </button>
               ))}
             </div>
+          </SlideLayout>
+        );
+      }
+      return (
+        <SlideLayout
+          title="Ты на фото с дипломом!"
+          subtitle="Круто, правда?"
+        >
+          <SlidePhoto src={imagePaths.diplomaPhoto} alt="Фото с дипломом" />
+          <div className="actions-row">
+            <button
+              type="button"
+              className="lego-button lego-button--green"
+              onClick={goNext}
+            >
+              Далее
+            </button>
           </div>
         </SlideLayout>
       );
+    }
 
     case 9: {
       const jerseyError =
@@ -283,13 +315,7 @@ export function SlidesRenderer({ state, dispatch }: SlidesRendererProps) {
     case 10:
       return (
         <SlideLayout title="Ты знаешь кто на фото?">
-          <div className="slide-image-wrap">
-            <img
-              className="slide-image slide-image--hero"
-              src={imagePaths.photo11}
-              alt="Друг на фото"
-            />
-          </div>
+          <SlidePhoto src={imagePaths.friendPhoto} alt="Друг на фото" />
           <ChoiceButtons
             options={[
               { id: 'friend', label: 'Мой друг' },
@@ -309,13 +335,7 @@ export function SlidesRenderer({ state, dispatch }: SlidesRendererProps) {
     case 11:
       return (
         <SlideLayout title="Знаешь что он задумал?">
-          <div className="slide-image-wrap">
-            <img
-              className="slide-image"
-              src={imagePaths.party55}
-              alt="Весёлая компания"
-            />
-          </div>
+          <SlidePhoto src={imagePaths.party55} alt="Весёлая компания" />
           <EmojiPicker
             onSelect={(mood) => {
               dispatch({ type: 'SET_MOOD', payload: mood });
@@ -331,13 +351,7 @@ export function SlidesRenderer({ state, dispatch }: SlidesRendererProps) {
           title="Он планирует веселиться и тусоваться"
           subtitle="Ты с нами?"
         >
-          <div className="slide-image-wrap">
-            <img
-              className="slide-image"
-              src={imagePaths.hockey22}
-              alt="LEGO парк"
-            />
-          </div>
+          <SlidePhoto src={imagePaths.invite66} alt="Приглашение на день рождения" />
           <ChoiceButtons
             options={[
               { id: 'yes', label: 'Да' },

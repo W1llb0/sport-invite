@@ -188,12 +188,12 @@ img {
   }
 }
 
-.choice-grid--5 {
+.choice-grid--6 {
   grid-template-columns: repeat(2, 1fr);
 }
 
-@media (min-width: 420px) {
-  .choice-grid--5 {
+@media (min-width: 380px) {
+  .choice-grid--6 {
     grid-template-columns: repeat(3, 1fr);
   }
 }
@@ -218,9 +218,16 @@ img {
 }
 
 .image-choice img {
-  width: 64px;
-  height: 64px;
+  width: 72px;
+  height: 72px;
   object-fit: contain;
+}
+
+.image-choice--team img {
+  background: #fff;
+  border-radius: 10px;
+  padding: 6px;
+  box-sizing: border-box;
 }
 
 .image-choice--large img {
@@ -544,7 +551,7 @@ img {
     font-size: 1.05rem;
   }
 
-  .choice-grid--5 {
+  .choice-grid--6 {
     grid-template-columns: repeat(2, 1fr);
   }
 }
