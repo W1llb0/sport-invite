@@ -1,5 +1,7 @@
-import type { InviteState, Skill } from '../state/invite-types';
+import type { ReactElement } from 'react';
+import type { InviteState, Skill, Skin } from '../state/invite-types';
 import { buildSkillAvatarStyle, getSkillClassName } from '../config/avatar-styles';
+import { getSkinFaceLayout, mapSkinPoint } from '../config/skin-face-layout';
 
 type SkillAvatarProps = {
   state: InviteState;
@@ -11,10 +13,190 @@ type AvatarFigureProps = {
   teamLogo: string | null;
   number: string | null;
   skill: Skill;
+  skin: Skin | null;
 };
 
 const stroke = '#1a1a1a';
-const skin = '#FFCF00';
+const skinColor = '#FFCF00';
+const headBox = { x: 38, y: 8, w: 84, h: 58 };
+const neckTop = 62;
+const neckHeight = 8;
+
+function Glasses({ skin }: { skin: Skin | null }): ReactElement {
+  const layout = getSkinFaceLayout(skin);
+  const leftEye = mapSkinPoint(layout, layout.leftEye, headBox);
+  const rightEye = mapSkinPoint(layout, layout.rightEye, headBox);
+  const yOffset = layout.eyeCenterYOffset ?? 0;
+  const leftLensY = leftEye.y + yOffset;
+  const rightLensY = rightEye.y + yOffset;
+  const eyeDistance = rightEye.x - leftEye.x;
+  const scale = Math.min(headBox.w / layout.sourceWidth, headBox.h / layout.sourceHeight);
+  const lensRadius = Math.min(layout.eyeRadiusPx * scale * 1.48 + 1.6, (eyeDistance - 1.6) / 2);
+  const frameStroke = 2.1;
+  const bridgeY = (leftLensY + rightLensY) / 2 - lensRadius * 0.62;
+  const bridgeLeftX = leftEye.x + lensRadius * 0.52;
+  const bridgeRightX = rightEye.x - lensRadius * 0.52;
+  return (
+    <g stroke={stroke} strokeLinecap="round" strokeLinejoin="round" fill="none">
+      <line
+        x1={leftEye.x - lensRadius}
+        y1={leftLensY}
+        x2={leftEye.x - lensRadius - 7}
+        y2={leftLensY - 1}
+        strokeWidth={1.8}
+      />
+      <line
+        x1={rightEye.x + lensRadius}
+        y1={rightLensY}
+        x2={rightEye.x + lensRadius + 7}
+        y2={rightLensY - 1}
+        strokeWidth={1.8}
+      />
+      {bridgeRightX > bridgeLeftX && (
+        <line x1={bridgeLeftX} y1={bridgeY} x2={bridgeRightX} y2={bridgeY} strokeWidth={frameStroke} />
+      )}
+      <circle cx={leftEye.x} cy={leftLensY} r={lensRadius} strokeWidth={frameStroke} />
+      <circle cx={rightEye.x} cy={rightLensY} r={lensRadius} strokeWidth={frameStroke} />
+    </g>
+  );
+}
+
+function DefaultArms({ torsoTop }: { torsoTop: number }): ReactElement {
+  const handY = torsoTop + 50;
+  return (
+    <g>
+      <rect x="22" y={torsoTop} width="18" height="40" rx="3" fill={skinColor} stroke={stroke} strokeWidth="2" />
+      <rect x="120" y={torsoTop} width="18" height="40" rx="3" fill={skinColor} stroke={stroke} strokeWidth="2" />
+      <circle cx="31" cy={handY} r="7" fill={skinColor} stroke={stroke} strokeWidth="2" />
+      <circle cx="129" cy={handY} r="7" fill={skinColor} stroke={stroke} strokeWidth="2" />
+    </g>
+  );
+}
+
+function HockeyStick({ torsoTop, handY }: { torsoTop: number; handY: number }): ReactElement {
+  const shaftX = 116;
+  const shaftTop = torsoTop + 2;
+  const bladeY = 180;
+  return (
+    <g>
+      <rect x="86" y={bladeY} width="48" height="8" rx="2" fill="#1a1a1a" stroke={stroke} strokeWidth="1.8" />
+      <rect x={shaftX} y={shaftTop} width="7" height={bladeY - shaftTop + 4} rx="2" fill="#C9A227" stroke={stroke} strokeWidth="1.8" />
+      <rect x={shaftX} y={shaftTop} width="7" height="12" rx="2" fill="#fff" opacity="0.35" />
+      <circle cx={shaftX + 3.5} cy={handY} r="6.5" fill={skinColor} stroke={stroke} strokeWidth="2" />
+    </g>
+  );
+}
+
+function HockeyArms({ torsoTop }: { torsoTop: number }): ReactElement {
+  const freeHandY = torsoTop + 38;
+  const stickHandY = torsoTop + 22;
+  return (
+    <g>
+      <rect x="28" y={torsoTop} width="14" height={freeHandY - torsoTop} rx="3" fill={skinColor} stroke={stroke} strokeWidth="2" />
+      <circle cx="35" cy={freeHandY} r="6.5" fill={skinColor} stroke={stroke} strokeWidth="2" />
+      <rect x="104" y={torsoTop} width="14" height={stickHandY - torsoTop + 2} rx="3" fill={skinColor} stroke={stroke} strokeWidth="2" />
+    </g>
+  );
+}
+
+function FootballBall(): ReactElement {
+  return (
+    <g>
+      <circle cx="122" cy="186" r="9" fill="#fff" stroke={stroke} strokeWidth="2" />
+      <path d="M 122 177 L 122 195 M 113 186 L 131 186" stroke={stroke} strokeWidth="1.2" />
+    </g>
+  );
+}
+
+function SmartTie({ color, torsoTop }: { color: string; torsoTop: number }): ReactElement {
+  const knotTop = torsoTop + 10;
+  const tieTop = knotTop + 10;
+  const tieBottom = tieTop + 26;
+  return (
+    <g>
+      <polygon points={`80,${knotTop} 76,${tieTop} 84,${tieTop}`} fill="#fff" stroke={stroke} strokeWidth="1.2" />
+      <polygon points={`80,${tieTop} 76,${tieBottom} 84,${tieBottom}`} fill={color} stroke={stroke} strokeWidth="1.2" />
+    </g>
+  );
+}
+
+function BookProp(): ReactElement {
+  return (
+    <g>
+      <rect x="62" y="112" width="36" height="26" rx="2" fill="#1565C0" stroke={stroke} strokeWidth="2" />
+      <rect x="66" y="116" width="28" height="3" fill="#fff" opacity="0.75" />
+      <rect x="66" y="122" width="20" height="2" fill="#fff" opacity="0.45" />
+    </g>
+  );
+}
+
+function ChessBoardProp(): ReactElement {
+  const boardX = 62;
+  const boardY = 110;
+  const boardSize = 36;
+  const cellSize = boardSize / 8;
+  const lightSquare = '#F0D9B5';
+  const darkSquare = '#B58863';
+  const squares: ReactElement[] = [];
+  for (let row = 0; row < 8; row += 1) {
+    for (let col = 0; col < 8; col += 1) {
+      const isLight = (row + col) % 2 === 0;
+      squares.push(
+        <rect
+          key={`${row}-${col}`}
+          x={boardX + col * cellSize}
+          y={boardY + row * cellSize}
+          width={cellSize}
+          height={cellSize}
+          fill={isLight ? lightSquare : darkSquare}
+        />,
+      );
+    }
+  }
+  return (
+    <g>
+      <rect
+        x={boardX - 1}
+        y={boardY - 1}
+        width={boardSize + 2}
+        height={boardSize + 2}
+        fill="#fff"
+        stroke={stroke}
+        strokeWidth="2"
+      />
+      {squares}
+    </g>
+  );
+}
+
+function TeamBadge({
+  teamLogo,
+  number,
+}: {
+  teamLogo: string;
+  number: string | null;
+}): ReactElement {
+  return (
+    <g>
+      <circle cx="80" cy="94" r="13" fill="#fff" stroke={stroke} strokeWidth="2" />
+      <image href={teamLogo} x="69" y="83" width="22" height="22" preserveAspectRatio="xMidYMid meet" />
+      {number && (
+        <text
+          x="80"
+          y="124"
+          textAnchor="middle"
+          fontSize="18"
+          fontWeight="700"
+          fill="#fff"
+          stroke={stroke}
+          strokeWidth="0.6"
+        >
+          {number}
+        </text>
+      )}
+    </g>
+  );
+}
 
 function AvatarFigure({
   headImage,
@@ -22,49 +204,62 @@ function AvatarFigure({
   teamLogo,
   number,
   skill,
+  skin,
 }: AvatarFigureProps) {
   const isFootball = skill === 'ball';
-  const hipColor = isFootball ? '#237841' : jerseyColor;
+  const isHockey = skill === 'stick';
+  const isSmart = skill === 'chess' || skill === 'books';
+  const hipColor = isFootball ? '#237841' : '#1a1a1a';
   const legColor = isFootball ? '#fff' : '#1a1a1a';
+  const torsoTop = neckTop + neckHeight;
+  const hockeyStickHandY = torsoTop + 22;
+  const torsoPoints = isHockey
+    ? `52,${torsoTop} 108,${torsoTop} 114,136 46,136`
+    : `48,${torsoTop} 112,${torsoTop} 118,136 42,136`;
   return (
     <svg viewBox="0 0 160 210" className="skill-avatar__figure" aria-hidden="true">
-      <image href={headImage} x="46" y="0" width="68" height="78" preserveAspectRatio="xMidYMax meet" />
-      <rect x="68" y="74" width="24" height="12" fill={skin} stroke={stroke} strokeWidth="2" />
+      <g className="skill-avatar__figure-body">
+      <rect x="46" y="150" width="26" height="34" rx="2" fill={legColor} stroke={stroke} strokeWidth="2" />
+      <rect x="88" y="150" width="26" height="34" rx="2" fill={legColor} stroke={stroke} strokeWidth="2" />
+      <rect x="42" y="138" width="76" height="14" rx="2" fill={hipColor} stroke={stroke} strokeWidth="2" />
+      {isFootball && (
+        <>
+          <rect x="46" y="150" width="26" height="7" fill={jerseyColor} stroke={stroke} strokeWidth="1.5" />
+          <rect x="88" y="150" width="26" height="7" fill={jerseyColor} stroke={stroke} strokeWidth="1.5" />
+        </>
+      )}
       <polygon
-        points="48,84 112,84 118,142 42,142"
+        points={torsoPoints}
         fill={jerseyColor}
         stroke={stroke}
         strokeWidth="2.5"
         strokeLinejoin="round"
       />
-      <rect x="22" y="84" width="18" height="44" rx="3" fill={skin} stroke={stroke} strokeWidth="2" />
-      <rect x="120" y="84" width="18" height="44" rx="3" fill={skin} stroke={stroke} strokeWidth="2" />
-      <circle cx="31" cy="130" r="8" fill={skin} stroke={stroke} strokeWidth="2" />
-      <circle cx="129" cy="130" r="8" fill={skin} stroke={stroke} strokeWidth="2" />
-      {skill === 'chess' && (
-        <polygon points="76,88 84,88 84,96 76,96" fill="#fff" stroke={stroke} strokeWidth="1" />
-      )}
-      {skill === 'books' && (
-        <rect x="50" y="88" width="60" height="8" fill="#fff" stroke={stroke} strokeWidth="1" />
-      )}
-      {skill === 'stick' && (
+      {isHockey && (
         <>
-          <rect x="46" y="86" width="68" height="4" fill="#fff" opacity="0.35" />
-          <rect x="46" y="94" width="68" height="4" fill="#fff" opacity="0.35" />
+          <rect x="50" y={torsoTop + 2} width="60" height="4" fill="#fff" opacity="0.35" />
+          <rect x="50" y={torsoTop + 10} width="60" height="4" fill="#fff" opacity="0.35" />
         </>
       )}
-      {teamLogo && (
+      {isFootball && (
         <>
-          <circle cx="80" cy="104" r="16" fill="#fff" stroke={stroke} strokeWidth="2" />
-          <image href={teamLogo} x="66" y="90" width="28" height="28" preserveAspectRatio="xMidYMid meet" />
+          <rect x="46" y={torsoTop + 4} width="68" height="9" fill="#fff" opacity="0.28" />
+          <rect x="46" y={torsoTop + 28} width="68" height="9" fill="#fff" opacity="0.22" />
         </>
       )}
-      {number && (
+      {isSmart && (
+        <>
+          <rect x="52" y={torsoTop + 2} width="56" height="7" fill="#fff" stroke={stroke} strokeWidth="1" />
+          <SmartTie color={skill === 'chess' ? '#E30613' : '#FF8F00'} torsoTop={torsoTop} />
+        </>
+      )}
+      {teamLogo && !isSmart && <TeamBadge teamLogo={teamLogo} number={number} />}
+      {!teamLogo && number && !isSmart && (
         <text
           x="80"
-          y={teamLogo ? '132' : '120'}
+          y="112"
           textAnchor="middle"
-          fontSize="22"
+          fontSize="20"
           fontWeight="700"
           fill="#fff"
           stroke={stroke}
@@ -73,9 +268,30 @@ function AvatarFigure({
           {number}
         </text>
       )}
-      <rect x="42" y="142" width="76" height="14" rx="2" fill={hipColor} stroke={stroke} strokeWidth="2" />
-      <rect x="46" y="154" width="26" height="32" rx="2" fill={legColor} stroke={stroke} strokeWidth="2" />
-      <rect x="88" y="154" width="26" height="32" rx="2" fill={legColor} stroke={stroke} strokeWidth="2" />
+      {isHockey ? (
+        <HockeyArms torsoTop={torsoTop} />
+      ) : (
+        <DefaultArms torsoTop={torsoTop} />
+      )}
+      <rect x="72" y={neckTop - 3} width="16" height={neckHeight + 4} fill={skinColor} stroke={stroke} strokeWidth="2" />
+      <image
+        href={headImage}
+        x={headBox.x}
+        y={headBox.y}
+        width={headBox.w}
+        height={headBox.h}
+        preserveAspectRatio="xMidYMax meet"
+      />
+      {isHockey && <HockeyStick torsoTop={torsoTop} handY={hockeyStickHandY} />}
+      {skill === 'books' && <BookProp />}
+      {skill === 'chess' && <ChessBoardProp />}
+      {isFootball && <FootballBall />}
+      </g>
+      {isSmart && (
+        <g className="skill-avatar__glasses-layer">
+          <Glasses skin={skin} />
+        </g>
+      )}
     </svg>
   );
 }
@@ -88,6 +304,7 @@ export function SkillAvatar({ state }: SkillAvatarProps) {
       <div className="avatar-card__figure">
         <AvatarFigure
           skill={skill}
+          skin={state.skin}
           headImage={style.headImage}
           jerseyColor={style.jerseyColor}
           teamLogo={style.teamLogo}

@@ -7,10 +7,11 @@ export type SkillAvatarStyle = {
   jerseyColor: string;
   teamLogo: string | null;
   jerseyNumber: string | null;
+  team: Team | null;
 };
 
 const teamColors: Record<Team, string> = {
-  lada: "#E30613",
+  lada: "#003DA5",
   dynamo: "#0033A0",
   ska: "#0039A6",
   akm: "#FFD100",
@@ -19,6 +20,11 @@ const teamColors: Record<Team, string> = {
   akron: "#006633",
   barcelona: "#A50044",
   zenit: "#0088CC",
+};
+
+const smartOutfitColors: Record<"chess" | "books", string> = {
+  chess: "#2F3136",
+  books: "#5D4037",
 };
 
 const roleLabels: Record<Skill, string> = {
@@ -37,14 +43,21 @@ export function getSkillBackground(skill: Skill | null): string | null {
 
 export function buildSkillAvatarStyle(state: InviteState): SkillAvatarStyle {
   const skill: Skill = state.skill ?? "ball";
-  const team: Team = state.team ?? "ska";
+  const team = state.team;
+  let jerseyColor = teamColors.ska;
+  if (skill === "stick" || skill === "ball") {
+    jerseyColor = team ? teamColors[team] : teamColors.ska;
+  } else if (skill === "chess" || skill === "books") {
+    jerseyColor = smartOutfitColors[skill];
+  }
   return {
     headImage: getAssetPath(`assets/skins/${state.skin ?? "light"}.png`),
     roleLabel: roleLabels[skill],
-    jerseyColor: teamColors[team],
-    teamLogo: state.team ? getTeamImage(state.team) : null,
+    jerseyColor,
+    teamLogo: team ? getTeamImage(team) : null,
     jerseyNumber:
       state.jerseyNumber !== null ? String(state.jerseyNumber) : null,
+    team,
   };
 }
 

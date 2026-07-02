@@ -383,7 +383,14 @@ img {
   width: 100%;
   height: auto;
   display: block;
+}
+
+.skill-avatar__figure-body {
   filter: drop-shadow(3px 3px 0 rgba(0, 0, 0, 0.12));
+}
+
+.skill-avatar__glasses-layer {
+  pointer-events: none;
 }
 
 .avatar-card__role {
