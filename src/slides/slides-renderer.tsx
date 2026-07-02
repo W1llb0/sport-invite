@@ -390,7 +390,7 @@ export function SlidesRenderer({ state, dispatch }: SlidesRendererProps) {
       );
 
     case 14:
-      return <FinaleSlide />;
+      return <FinaleSlide state={state} />;
 
     default:
       return null;

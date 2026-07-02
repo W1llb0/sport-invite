@@ -17,6 +17,19 @@ function normalizePngFileName(fileName: string): string {
   return fileName.toLowerCase().endsWith('.png') ? fileName : `${fileName}.png`;
 }
 
+function blobToDataUrl(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      resolve(reader.result as string);
+    };
+    reader.onerror = () => {
+      reject(new Error('Failed to read blob'));
+    };
+    reader.readAsDataURL(blob);
+  });
+}
+
 async function waitForImages(element: HTMLElement): Promise<void> {
   const images = Array.from(element.querySelectorAll('img'));
   await Promise.all(
@@ -34,21 +47,81 @@ async function waitForImages(element: HTMLElement): Promise<void> {
   );
 }
 
+async function inlineImageSource(source: string): Promise<string | null> {
+  if (!source || source.startsWith('data:')) {
+    return null;
+  }
+  try {
+    const response = await fetch(source, { cache: 'force-cache' });
+    if (!response.ok) {
+      return null;
+    }
+    const blob = await response.blob();
+    return blobToDataUrl(blob);
+  } catch {
+    return null;
+  }
+}
+
+async function inlineImagesForExport(element: HTMLElement): Promise<() => void> {
+  const restores: Array<() => void> = [];
+  const images = Array.from(element.querySelectorAll('img'));
+  await Promise.all(
+    images.map(async (image) => {
+      const originalSrc = image.currentSrc || image.src;
+      const dataUrl = await inlineImageSource(originalSrc);
+      if (!dataUrl) {
+        return;
+      }
+      image.src = dataUrl;
+      restores.push(() => {
+        image.src = originalSrc;
+      });
+    }),
+  );
+  const svgImages = Array.from(element.querySelectorAll('image'));
+  await Promise.all(
+    svgImages.map(async (svgImage) => {
+      const href =
+        svgImage.getAttribute('href') ?? svgImage.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
+      if (!href) {
+        return;
+      }
+      const dataUrl = await inlineImageSource(href);
+      if (!dataUrl) {
+        return;
+      }
+      svgImage.setAttribute('href', dataUrl);
+      svgImage.setAttributeNS('http://www.w3.org/1999/xlink', 'href', dataUrl);
+      restores.push(() => {
+        svgImage.setAttribute('href', href);
+        svgImage.setAttributeNS('http://www.w3.org/1999/xlink', 'href', href);
+      });
+    }),
+  );
+  return () => {
+    restores.forEach((restore) => restore());
+  };
+}
+
 async function renderElementToPngBlob(element: HTMLElement): Promise<Blob> {
   await document.fonts.ready;
   await waitForImages(element);
   element.classList.add(EXPORTING_CLASS_NAME);
+  const restoreImages = await inlineImagesForExport(element);
   try {
     const blob = await toBlob(element, {
-      backgroundColor: '#ffffff',
-      pixelRatio: Math.min(window.devicePixelRatio || 1, 2),
-      cacheBust: true,
+      backgroundColor: '#fffef8',
+      pixelRatio: Math.min(window.devicePixelRatio || 1, 3),
+      cacheBust: false,
+      skipFonts: false,
     });
     if (!blob) {
       throw new Error('Failed to render invite image');
     }
     return blob;
   } finally {
+    restoreImages();
     element.classList.remove(EXPORTING_CLASS_NAME);
   }
 }

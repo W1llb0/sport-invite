@@ -1,12 +1,21 @@
 import { useRef, useState, type ReactElement } from 'react';
 import { SlideLayout } from './slide-layout';
+import { SkillAvatar } from './skill-avatar';
+import { InviteCalendarIcon } from './invite-calendar-icon';
 import { imagePaths } from '../config/slides';
+import type { InviteState } from '../state/invite-types';
 import {
   downloadElementAsImage,
   revokeInviteImageBlobUrl,
 } from '../utils/download-element-as-image';
 
-export function FinaleSlide(): ReactElement {
+type FinaleSlideProps = {
+  state: InviteState;
+};
+
+const FINALE_TITLE = 'Имба! Ты заспавнил приглашение!';
+
+export function FinaleSlide({ state }: FinaleSlideProps): ReactElement {
   const inviteRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const [downloadError, setDownloadError] = useState<string | null>(null);
@@ -41,70 +50,83 @@ export function FinaleSlide(): ReactElement {
   };
 
   return (
-    <SlideLayout
-      title="Имба! Ты заспавнил приглашение!"
-      className="slide-card--finale"
-    >
-      <div className="finale-stack" ref={inviteRef}>
-        <div className="invite-card invite-card--spawn">
-          <img src={imagePaths.invite66} alt="Приглашение Lev birthday" />
-        </div>
-        <div className="invite-ticket">
-          <header className="invite-ticket__section invite-ticket__section--hero">
-            <div className="invite-ticket__hero">
-              <span className="invite-ticket__spark" aria-hidden="true">
-                🎉
-              </span>
-              <p className="invite-ticket__eyebrow sticker-text sticker-text--sm">
-                Приглашение на
-              </p>
-              <h2 className="invite-ticket__headline sticker-text sticker-text--lg">
-                День рождения!
-              </h2>
-            </div>
-          </header>
-          <section
-            className="invite-ticket__section invite-ticket__section--facts"
-            aria-label="Дата и место"
-          >
-            <div className="invite-ticket__facts">
-              <div className="invite-ticket__fact invite-ticket__fact--date">
-                <span className="invite-ticket__fact-icon" aria-hidden="true">
-                  📅
-                </span>
-                <span className="invite-ticket__fact-text sticker-text sticker-text--sm sticker-text--white">
-                  07 июля · 15:00
-                </span>
+    <SlideLayout title={FINALE_TITLE} showTitle={false} className="slide-card--finale">
+      <div className="finale-capture" ref={inviteRef}>
+        <h1 className="slide-title finale-capture__title">{FINALE_TITLE}</h1>
+        <div className="finale-stack">
+          <div className="invite-card invite-card--spawn">
+            <div className="invite-showcase">
+              <div className="invite-showcase__photo">
+                <img
+                  src={imagePaths.invite66}
+                  alt="Праздник на день рождения"
+                  crossOrigin="anonymous"
+                  draggable={false}
+                />
               </div>
-              <div className="invite-ticket__fact invite-ticket__fact--place">
-                <span className="invite-ticket__fact-icon" aria-hidden="true">
-                  📍
+              <aside className="invite-showcase__player" aria-label="Твой герой">
+                <p className="invite-showcase__label">Твой герой</p>
+                <SkillAvatar state={state} variant="invite" />
+              </aside>
+            </div>
+          </div>
+          <div className="invite-ticket">
+            <header className="invite-ticket__section invite-ticket__section--hero">
+              <div className="invite-ticket__hero">
+                <span className="invite-ticket__spark" aria-hidden="true">
+                  🎉
                 </span>
-                <span className="invite-ticket__fact-text sticker-text sticker-text--sm sticker-text--white">
-                  Тольятти, ЛАДА-Ресорт
-                </span>
+                <p className="invite-ticket__eyebrow sticker-text sticker-text--sm">
+                  Приглашение на
+                </p>
+                <h2 className="invite-ticket__headline sticker-text sticker-text--lg">
+                  День рождения!
+                </h2>
               </div>
-            </div>
-          </section>
-          <footer className="invite-ticket__section invite-ticket__section--footer">
-            <div className="invite-ticket__panel invite-ticket__signature">
-              <span className="invite-ticket__label">От кого</span>
-              <span className="invite-ticket__signature-name">
-                твой друг{' '}
-                <span className="invite-ticket__signature-highlight">Лев</span>{' '}
-                <strong className="invite-ticket__signature-number">#70</strong>
-              </span>
-            </div>
-            <div className="invite-ticket__panel invite-ticket__ps">
-              <span className="invite-ticket__ps-badge sticker-text sticker-text--sm sticker-text--white">
-                P.S.
-              </span>
-              <p className="invite-ticket__ps-text">
-                С собой возьми хорошее настроение, вещи для купания, а родителей можешь
-                на время оставить на баре — им и так будет прекрасно 🍻😀
-              </p>
-            </div>
-          </footer>
+            </header>
+            <section
+              className="invite-ticket__section invite-ticket__section--facts"
+              aria-label="Дата и место"
+            >
+              <div className="invite-ticket__facts">
+                <div className="invite-ticket__fact invite-ticket__fact--date">
+                  <InviteCalendarIcon />
+                  <span className="invite-ticket__fact-text invite-ticket__fact-text--date sticker-text sticker-text--md sticker-text--white">
+                    07 июля · 15:00
+                  </span>
+                </div>
+                <div className="invite-ticket__fact invite-ticket__fact--place">
+                  <span className="invite-ticket__fact-icon" aria-hidden="true">
+                    📍
+                  </span>
+                  <span className="invite-ticket__fact-text sticker-text sticker-text--sm sticker-text--white">
+                    Тольятти, ЛАДА-Ресорт
+                  </span>
+                </div>
+              </div>
+            </section>
+            <footer className="invite-ticket__section invite-ticket__section--footer">
+              <div className="invite-ticket__panel invite-ticket__signature">
+                <p className="invite-ticket__signature-combo">
+                  <span className="invite-ticket__signature-label">От кого</span>
+                  <span className="invite-ticket__signature-body">
+                    твой друг{' '}
+                    <span className="invite-ticket__signature-highlight">Лев</span>{' '}
+                    <strong className="invite-ticket__signature-number">#70</strong>
+                  </span>
+                </p>
+              </div>
+              <div className="invite-ticket__panel invite-ticket__ps">
+                <span className="invite-ticket__ps-badge sticker-text sticker-text--sm sticker-text--white">
+                  P.S.
+                </span>
+                <p className="invite-ticket__ps-text">
+                  С собой возьми хорошее настроение, вещи для купания, а родителей можешь
+                  на время оставить на баре — им и так будет прекрасно 🍻😀
+                </p>
+              </div>
+            </footer>
+          </div>
         </div>
       </div>
       <div className="finale-actions">

@@ -7,6 +7,8 @@ export type SkinFaceLayout = {
   rightEye: { x: number; y: number };
   eyeRadiusPx: number;
   eyeCenterYOffset?: number;
+  /** Positive values shift the rendered head left inside the head box. */
+  headOffsetX?: number;
 };
 
 /** Eye anchors measured from black pixels in public/assets/skins/*.png. */
@@ -58,11 +60,20 @@ export const skinFaceLayouts: Record<Skin, SkinFaceLayout> = {
     rightEye: { x: 316, y: 285 },
     eyeRadiusPx: 20,
     eyeCenterYOffset: 0.8,
+    headOffsetX: 0.06,
   },
 };
 
 export function getSkinFaceLayout(skin: Skin | null): SkinFaceLayout {
   return skinFaceLayouts[skin ?? 'light'];
+}
+
+export function getSkinHeadOffsetPx(
+  skin: Skin | null,
+  headWidth: number,
+): number {
+  const layout = getSkinFaceLayout(skin);
+  return (layout.headOffsetX ?? 0) * headWidth;
 }
 
 export type HeadImageTransform = {

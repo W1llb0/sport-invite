@@ -560,6 +560,11 @@ img {
   --sticker-drop: 3px;
 }
 
+.sticker-text--md {
+  --sticker-stroke: 2px;
+  --sticker-drop: 4px;
+}
+
 .sticker-text--white {
   --sticker-fill: var(--lego-white);
 }
@@ -578,7 +583,8 @@ img {
   background: linear-gradient(180deg, #fffef8 0%, var(--lego-white) 100%);
 }
 
-.slide-card--finale .slide-title {
+.slide-card--finale .slide-title,
+.finale-capture__title {
   margin-bottom: var(--finale-space-md);
   padding-bottom: var(--finale-space-sm);
   border-bottom: var(--border-thick);
@@ -600,6 +606,19 @@ img {
     var(--sticker-drop) var(--sticker-drop) 0 var(--lego-black);
 }
 
+.finale-capture {
+  display: flex;
+  flex-direction: column;
+}
+
+.finale-capture.is-exporting {
+  padding: 18px 16px 16px;
+  border: var(--border-thick);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, #fffef8 0%, var(--lego-white) 100%);
+  box-shadow: 6px 6px 0 var(--lego-black);
+}
+
 .finale-stack {
   display: flex;
   flex-direction: column;
@@ -607,12 +626,91 @@ img {
   align-items: stretch;
 }
 
-.finale-stack.is-exporting,
-.finale-stack.is-exporting * {
+.finale-stack.is-exporting .invite-card--spawn,
+.finale-stack.is-exporting .invite-ticket,
+.finale-stack.is-exporting .invite-ticket__section,
+.finale-stack.is-exporting .invite-ticket__panel,
+.finale-stack.is-exporting .invite-ticket__spark,
+.finale-capture.is-exporting .invite-card--spawn,
+.finale-capture.is-exporting .invite-ticket,
+.finale-capture.is-exporting .invite-ticket__section,
+.finale-capture.is-exporting .invite-ticket__panel,
+.finale-capture.is-exporting .invite-ticket__spark {
   animation: none !important;
   transition: none !important;
   opacity: 1 !important;
   transform: none !important;
+}
+
+.invite-showcase {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(118px, 0.85fr);
+  align-items: stretch;
+  min-height: clamp(168px, 42vw, 220px);
+}
+
+.invite-showcase__photo {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #8fd3ff 0%, #ffcf00 100%);
+}
+
+.invite-showcase__photo img {
+  width: 100%;
+  height: 100%;
+  min-height: clamp(168px, 42vw, 220px);
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+.invite-showcase__player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 8px;
+  border-left: var(--border-thick);
+  background: linear-gradient(180deg, #fffef8 0%, #ffe566 100%);
+}
+
+.invite-showcase__label {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lego-blue);
+}
+
+.avatar-card--invite {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.avatar-card--invite .avatar-card__figure {
+  width: min(112px, 100%);
+  margin: 0 auto;
+}
+
+.avatar-card--invite .avatar-card__role {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.1;
+}
+
+.invite-calendar-icon {
+  width: 2.4rem;
+  height: 2.4rem;
+  flex-shrink: 0;
+  filter: drop-shadow(2px 2px 0 rgb(0 0 0 / 0.2));
 }
 
 .slide-card--finale .invite-card {
@@ -753,6 +851,11 @@ img {
   line-height: 1.1;
 }
 
+.invite-ticket__fact-text--date {
+  font-size: clamp(1.28rem, 5vw, 1.55rem);
+  letter-spacing: 0.02em;
+}
+
 .invite-ticket__signature {
   display: flex;
   flex-direction: column;
@@ -761,13 +864,33 @@ img {
   text-align: center;
 }
 
-.invite-ticket__signature-name {
+.invite-ticket__signature-combo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.2rem 0.75rem;
+  margin: 0;
+  line-height: 1.15;
+}
+
+.invite-ticket__signature-label {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lego-blue);
+  transform: translateY(-3px) rotate(-4deg);
+}
+
+.invite-ticket__signature-body {
   font-family: var(--font-body);
   font-weight: 700;
-  font-size: clamp(1.28rem, 5.2vw, 1.58rem);
+  font-size: clamp(1.32rem, 5.4vw, 1.68rem);
   letter-spacing: 0.01em;
-  line-height: 1.15;
   color: var(--lego-black);
+  transform: translateY(2px) rotate(1.5deg);
 }
 
 .invite-ticket__signature-highlight {
@@ -1401,7 +1524,30 @@ img {
     gap: var(--finale-space-sm);
   }
 
-  .slide-card--finale .slide-title {
+  .invite-showcase {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .invite-showcase__photo img {
+    min-height: 148px;
+  }
+
+  .invite-showcase__player {
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 12px;
+    border-left: none;
+    border-top: var(--border-thick);
+  }
+
+  .avatar-card--invite .avatar-card__figure {
+    width: min(96px, 28vw);
+  }
+
+  .slide-card--finale .slide-title,
+  .finale-capture__title {
     font-size: clamp(1.2rem, 6vw, 1.55rem);
   }
 

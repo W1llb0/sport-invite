@@ -1,10 +1,11 @@
 import type { ReactElement } from 'react';
 import type { InviteState, Skill, Skin } from '../state/invite-types';
 import { buildSkillAvatarStyle, getSkillClassName } from '../config/avatar-styles';
-import { getSkinFaceLayout, mapSkinPoint } from '../config/skin-face-layout';
+import { getSkinFaceLayout, getSkinHeadOffsetPx, mapSkinPoint } from '../config/skin-face-layout';
 
 type SkillAvatarProps = {
   state: InviteState;
+  variant?: 'default' | 'invite';
 };
 
 type AvatarFigureProps = {
@@ -136,68 +137,37 @@ function HockeyStickShaft({
   );
 }
 
-function HockeyHelmet({ skin }: { skin: Skin | null }): ReactElement {
-  const sideInset = skin === 'ears' ? 10 : 13;
+function HockeyCap({ skin }: { skin: Skin | null }): ReactElement {
+  const sideInset = skin === 'ears' ? 17 : 21;
   const left = headBox.x + sideInset;
   const right = headBox.x + headBox.w - sideInset;
   const width = right - left;
   const centerX = headBox.x + headBox.w / 2;
-  const browY = headBox.y + 23;
-  const cageTop = browY + 2;
-  const cageBottom = headBox.y + headBox.h - 8;
-  const shellColor = '#252525';
-  const domeRx = width / 2 - 3;
-  const domeRy = 18;
-  const cageInset = 5;
-  const barCount = 3;
+  const browY = headBox.y + 18;
+  const capColor = '#0055bf';
+  const domeRx = width / 2 - 1;
+  const domeRy = 10;
+  const brimY = browY + 4;
   return (
     <g>
       <path
-        d={`M ${left + 4} ${browY}
-            A ${domeRx} ${domeRy} 0 0 1 ${right - 4} ${browY}
-            Q ${centerX} ${browY + 5}, ${left + 4} ${browY} Z`}
-        fill={shellColor}
+        d={`M ${left + 2} ${browY}
+            A ${domeRx} ${domeRy} 0 0 1 ${right - 2} ${browY}
+            Q ${centerX} ${browY + 5}, ${left + 2} ${browY} Z`}
+        fill={capColor}
+        stroke={stroke}
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <ellipse
+        cx={centerX}
+        cy={brimY}
+        rx={width / 2 - 2}
+        ry="3.5"
+        fill={capColor}
         stroke={stroke}
         strokeWidth="2"
       />
-      <rect
-        x={left + cageInset}
-        y={cageTop}
-        width={width - cageInset * 2}
-        height={cageBottom - cageTop}
-        rx="5"
-        fill="none"
-        stroke={stroke}
-        strokeWidth="2"
-      />
-      {Array.from({ length: barCount }, (_, index) => {
-        const barX = left + cageInset + 6 + (index * (width - cageInset * 2 - 12)) / (barCount - 1);
-        return (
-          <line
-            key={`helmet-v-${barX}`}
-            x1={barX}
-            y1={cageTop + 3}
-            x2={barX}
-            y2={cageBottom - 3}
-            stroke={stroke}
-            strokeWidth="1.5"
-          />
-        );
-      })}
-      {Array.from({ length: barCount }, (_, index) => {
-        const barY = cageTop + 5 + (index * (cageBottom - cageTop - 10)) / (barCount - 1);
-        return (
-          <line
-            key={`helmet-h-${barY}`}
-            x1={left + cageInset + 2}
-            y1={barY}
-            x2={right - cageInset - 2}
-            y2={barY}
-            stroke={stroke}
-            strokeWidth="1.4"
-          />
-        );
-      })}
     </g>
   );
 }
@@ -350,6 +320,8 @@ function AvatarFigure({
   const torsoPoints = isHockey
     ? `52,${torsoTop} 108,${torsoTop} 114,136 46,136`
     : `48,${torsoTop} 112,${torsoTop} 118,136 42,136`;
+  const headOffsetX = getSkinHeadOffsetPx(skin, headBox.w);
+  const headShift = headOffsetX > 0 ? `translate(${-headOffsetX}, 0)` : undefined;
   return (
     <svg viewBox="0 0 160 210" className="skill-avatar__figure" aria-hidden="true">
       <g className="skill-avatar__figure-body">
@@ -416,21 +388,7 @@ function AvatarFigure({
       )}
       <rect x="72" y={neckTop - 3} width="16" height={neckHeight + 4} fill={skinColor} stroke={stroke} strokeWidth="2" />
       {!isHockey && (
-        <image
-          href={headImage}
-          x={headBox.x}
-          y={headBox.y}
-          width={headBox.w}
-          height={headBox.h}
-          preserveAspectRatio="xMidYMax meet"
-        />
-      )}
-      {skill === 'books' && <BookProp />}
-      {skill === 'chess' && <ChessBoardProp />}
-      {isFootball && <FootballBall />}
-      </g>
-      {isHockey && (
-        <g className="skill-avatar__helmet-layer">
+        <g transform={headShift}>
           <image
             href={headImage}
             x={headBox.x}
@@ -439,11 +397,27 @@ function AvatarFigure({
             height={headBox.h}
             preserveAspectRatio="xMidYMax meet"
           />
-          <HockeyHelmet skin={skin} />
+        </g>
+      )}
+      {skill === 'books' && <BookProp />}
+      {skill === 'chess' && <ChessBoardProp />}
+      {isFootball && <FootballBall />}
+      </g>
+      {isHockey && (
+        <g className="skill-avatar__helmet-layer" transform={headShift}>
+          <image
+            href={headImage}
+            x={headBox.x}
+            y={headBox.y}
+            width={headBox.w}
+            height={headBox.h}
+            preserveAspectRatio="xMidYMax meet"
+          />
+          <HockeyCap skin={skin} />
         </g>
       )}
       {isSmart && (
-        <g className="skill-avatar__glasses-layer">
+        <g className="skill-avatar__glasses-layer" transform={headShift}>
           <Glasses skin={skin} />
         </g>
       )}
@@ -451,11 +425,15 @@ function AvatarFigure({
   );
 }
 
-export function SkillAvatar({ state }: SkillAvatarProps) {
+export function SkillAvatar({ state, variant = 'default' }: SkillAvatarProps) {
   const skill: Skill = state.skill ?? 'ball';
   const style = buildSkillAvatarStyle(state);
+  const cardClassName =
+    variant === 'invite'
+      ? `avatar-card avatar-card--invite ${getSkillClassName(skill)}`
+      : `avatar-card ${getSkillClassName(skill)}`;
   return (
-    <div className={`avatar-card ${getSkillClassName(skill)}`}>
+    <div className={cardClassName}>
       <div className="avatar-card__figure">
         <AvatarFigure
           skill={skill}
