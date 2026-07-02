@@ -18,12 +18,13 @@ export function ChoiceButtons({
           ? ' lego-button--red'
           : '';
   return (
-    <div className="actions-row">
-      {options.map((option) => (
+    <div className="actions-row actions-row--choices">
+      {options.map((option, index) => (
         <button
           key={option.id}
           type="button"
           className={`lego-button${modifierClass}`}
+          style={{ animationDelay: `${index * 0.08}s` }}
           onClick={() => onSelect(option.id)}
         >
           {option.label}

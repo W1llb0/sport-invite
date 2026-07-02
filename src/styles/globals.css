@@ -57,6 +57,7 @@ img {
 }
 
 .app-shell {
+  position: relative;
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
@@ -75,17 +76,239 @@ img {
   border-radius: var(--radius-lg);
   box-shadow: 6px 6px 0 var(--lego-black);
   padding: 24px 20px;
-  animation: slideIn 0.35s ease-out;
 }
 
-@keyframes slideIn {
+.slide-stage {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  justify-content: center;
+  animation: gameSlideIn 0.55s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.slide-stage .slide-card {
+  animation: cardPop 0.5s cubic-bezier(0.34, 1.4, 0.64, 1) 0.05s backwards;
+}
+
+.slide-title {
+  animation: titlePop 0.45s cubic-bezier(0.34, 1.4, 0.64, 1) 0.12s backwards;
+}
+
+.slide-subtitle {
+  animation: fadeUp 0.4s ease 0.18s backwards;
+}
+
+.slide-content > * {
+  animation: fadeUp 0.45s ease backwards;
+}
+
+.slide-content > *:nth-child(1) {
+  animation-delay: 0.16s;
+}
+
+.slide-content > *:nth-child(2) {
+  animation-delay: 0.24s;
+}
+
+.slide-content > *:nth-child(3) {
+  animation-delay: 0.32s;
+}
+
+.slide-content > *:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+@keyframes gameSlideIn {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(28px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes cardPop {
+  from {
+    opacity: 0;
+    transform: scale(0.92) rotate(-1deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes titlePop {
+  from {
+    opacity: 0;
+    transform: scale(0.85) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes choicePop {
+  from {
+    opacity: 0;
+    transform: scale(0.82) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes emojiBounce {
+  from {
+    opacity: 0;
+    transform: scale(0.5) rotate(-8deg);
+  }
+  70% {
+    transform: scale(1.08) rotate(2deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes levelFlash {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.12);
+    color: var(--lego-red);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes blockFill {
+  from {
+    transform: scaleY(0.4);
+    background: rgba(0, 0, 0, 0.15);
+  }
+  to {
+    transform: scaleY(1);
+    background: var(--lego-red);
+  }
+}
+
+@keyframes blockPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 transparent;
+  }
+  50% {
+    box-shadow: 0 0 8px rgba(227, 0, 11, 0.55);
+  }
+}
+
+@keyframes buttonPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+@keyframes avatarCelebrate {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+  25% {
+    transform: translateY(-6px) rotate(-2deg);
+  }
+  75% {
+    transform: translateY(-4px) rotate(2deg);
+  }
+}
+
+@keyframes inviteSpawn {
+  from {
+    opacity: 0;
+    transform: scale(0.7) rotate(-4deg);
+  }
+  60% {
+    transform: scale(1.04) rotate(1deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes bannerRise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes confettiFall {
+  0% {
+    transform: translateY(-10vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh) rotate(720deg);
+    opacity: 0.6;
+  }
+}
+
+@keyframes floatBrick {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(6deg);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes finaleGlow {
+  0%,
+  100% {
+    box-shadow: 6px 6px 0 var(--lego-black), 0 0 0 rgba(255, 207, 0, 0);
+  }
+  50% {
+    box-shadow: 6px 6px 0 var(--lego-black), 0 0 24px rgba(255, 207, 0, 0.45);
   }
 }
 
@@ -98,24 +321,26 @@ img {
 
 .slide-subtitle {
   text-align: center;
-  font-size: 1rem;
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: 500;
   margin-bottom: 16px;
-  color: #333;
+  color: var(--lego-black);
 }
 
 .lego-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 52px;
-  padding: 12px 20px;
+  min-height: 56px;
+  padding: 14px 20px;
   border: var(--border-thick);
   border-radius: var(--radius-md);
   background: var(--lego-blue);
   color: var(--lego-white);
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: 1.05rem;
+  font-size: 1.2rem;
   letter-spacing: 0.03em;
   cursor: pointer;
   box-shadow: 4px 4px 0 var(--lego-black);
@@ -148,14 +373,16 @@ img {
 
 .lego-input {
   width: 100%;
-  min-height: 52px;
-  padding: 12px 16px;
+  min-height: 56px;
+  padding: 14px 16px;
   border: var(--border-thick);
   border-radius: var(--radius-md);
-  font-family: var(--font-body);
-  font-size: 1.2rem;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
   text-align: center;
+  color: var(--lego-black);
   background: var(--lego-white);
   box-shadow: inset 3px 3px 0 rgba(0, 0, 0, 0.08);
 }
@@ -202,19 +429,50 @@ img {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 12px 8px;
+  gap: 10px;
+  padding: 14px 10px;
   border: var(--border-thick);
   border-radius: var(--radius-md);
   background: var(--lego-yellow);
   cursor: pointer;
   box-shadow: 3px 3px 0 var(--lego-black);
-  transition: transform 0.1s ease;
-  min-height: 48px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  min-height: 56px;
+  animation: choicePop 0.45s cubic-bezier(0.34, 1.4, 0.64, 1) backwards;
+}
+
+.choice-grid .image-choice:nth-child(1) {
+  animation-delay: 0.08s;
+}
+
+.choice-grid .image-choice:nth-child(2) {
+  animation-delay: 0.14s;
+}
+
+.choice-grid .image-choice:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.choice-grid .image-choice:nth-child(4) {
+  animation-delay: 0.26s;
+}
+
+.choice-grid .image-choice:nth-child(5) {
+  animation-delay: 0.32s;
+}
+
+.choice-grid .image-choice:nth-child(6) {
+  animation-delay: 0.38s;
 }
 
 .image-choice:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 5px 5px 0 var(--lego-black);
+}
+
+.image-choice:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 2px 2px 0 var(--lego-black);
 }
 
 .image-choice img {
@@ -236,9 +494,13 @@ img {
 }
 
 .image-choice span {
+  font-family: var(--font-display);
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
   text-align: center;
+  color: var(--lego-black);
 }
 
 .slide-image-wrap {
@@ -248,6 +510,470 @@ img {
   border-radius: var(--radius-md);
   overflow: hidden;
   background: #f5f5f5;
+  animation: fadeUp 0.5s ease 0.1s backwards;
+}
+
+.lego-button--pulse {
+  animation: buttonPulse 1.4s ease-in-out infinite;
+}
+
+.actions-row--choices .lego-button {
+  animation: fadeUp 0.4s ease backwards;
+}
+
+.emoji-picker--animated .emoji-choice {
+  animation: emojiBounce 0.5s cubic-bezier(0.34, 1.4, 0.64, 1) backwards;
+}
+
+.slide-card--celebrate .avatar-preview-wrap {
+  animation: avatarCelebrate 2s ease-in-out infinite;
+}
+
+.sticker-text {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1.08;
+  --sticker-fill: var(--sticker-cream);
+  --sticker-stroke: 2px;
+  --sticker-drop: 5px;
+  color: var(--sticker-fill);
+  text-shadow:
+    calc(-1 * var(--sticker-stroke)) calc(-1 * var(--sticker-stroke)) 0 var(--lego-black),
+    var(--sticker-stroke) calc(-1 * var(--sticker-stroke)) 0 var(--lego-black),
+    calc(-1 * var(--sticker-stroke)) var(--sticker-stroke) 0 var(--lego-black),
+    var(--sticker-stroke) var(--sticker-stroke) 0 var(--lego-black),
+    0 calc(-1 * var(--sticker-stroke)) 0 var(--lego-black),
+    0 var(--sticker-stroke) 0 var(--lego-black),
+    calc(-1 * var(--sticker-stroke)) 0 0 var(--lego-black),
+    var(--sticker-stroke) 0 0 var(--lego-black),
+    var(--sticker-drop) var(--sticker-drop) 0 var(--lego-black);
+}
+
+.sticker-text--lg {
+  --sticker-stroke: 2.5px;
+  --sticker-drop: 6px;
+}
+
+.sticker-text--sm {
+  --sticker-stroke: 1.5px;
+  --sticker-drop: 3px;
+}
+
+.sticker-text--white {
+  --sticker-fill: var(--lego-white);
+}
+
+.sticker-text--red {
+  --sticker-fill: var(--lego-red);
+}
+
+.sticker-text--yellow {
+  --sticker-fill: var(--lego-yellow);
+}
+
+.slide-card--finale {
+  animation: finaleGlow 2.5s ease-in-out infinite;
+  padding: 24px 20px 22px;
+  background: linear-gradient(180deg, #fffef8 0%, var(--lego-white) 100%);
+}
+
+.slide-card--finale .slide-title {
+  margin-bottom: var(--finale-space-md);
+  padding-bottom: var(--finale-space-sm);
+  border-bottom: var(--border-thick);
+  font-size: clamp(1.35rem, 5.2vw, 1.85rem);
+  --sticker-fill: var(--sticker-cream);
+  --sticker-stroke: 2px;
+  --sticker-drop: 4px;
+  color: var(--sticker-fill);
+  letter-spacing: 0.02em;
+  text-shadow:
+    calc(-1 * var(--sticker-stroke)) calc(-1 * var(--sticker-stroke)) 0 var(--lego-black),
+    var(--sticker-stroke) calc(-1 * var(--sticker-stroke)) 0 var(--lego-black),
+    calc(-1 * var(--sticker-stroke)) var(--sticker-stroke) 0 var(--lego-black),
+    var(--sticker-stroke) var(--sticker-stroke) 0 var(--lego-black),
+    0 calc(-1 * var(--sticker-stroke)) 0 var(--lego-black),
+    0 var(--sticker-stroke) 0 var(--lego-black),
+    calc(-1 * var(--sticker-stroke)) 0 0 var(--lego-black),
+    var(--sticker-stroke) 0 0 var(--lego-black),
+    var(--sticker-drop) var(--sticker-drop) 0 var(--lego-black);
+}
+
+.finale-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--finale-space-md);
+  align-items: stretch;
+}
+
+.slide-card--finale .invite-card {
+  margin-bottom: 0;
+  box-shadow: var(--finale-panel-shadow);
+}
+
+.invite-card--spawn {
+  animation: inviteSpawn 0.65s cubic-bezier(0.34, 1.4, 0.64, 1) 0.2s backwards;
+}
+
+.invite-ticket {
+  display: flex;
+  flex-direction: column;
+  padding: var(--finale-space-md) var(--finale-space-sm);
+  border: var(--border-thick);
+  border-radius: var(--radius-lg);
+  background: var(--lego-yellow);
+  box-shadow: 6px 6px 0 var(--lego-black);
+  animation: bannerRise 0.55s ease 0.35s backwards;
+}
+
+.invite-ticket__section {
+  display: flex;
+  flex-direction: column;
+}
+
+.invite-ticket__section--hero {
+  animation: fadeUp 0.45s ease 0.45s backwards;
+}
+
+.invite-ticket__section--facts {
+  margin-top: var(--finale-space-lg);
+  animation: fadeUp 0.45s ease 0.55s backwards;
+}
+
+.invite-ticket__section--footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--finale-space-sm);
+  margin-top: var(--finale-space-md);
+}
+
+.invite-ticket__panel {
+  border: var(--border-thick);
+  border-radius: var(--radius-md);
+  background: var(--lego-white);
+  box-shadow: var(--finale-panel-shadow);
+  animation: fadeUp 0.45s ease backwards;
+}
+
+.invite-ticket__section--footer .invite-ticket__panel:nth-child(1) {
+  animation-delay: 0.65s;
+}
+
+.invite-ticket__section--footer .invite-ticket__panel:nth-child(2) {
+  animation-delay: 0.75s;
+}
+
+.invite-ticket__label {
+  display: block;
+  margin: 0 0 var(--finale-space-xs);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--lego-blue);
+}
+
+.invite-ticket__hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--finale-space-xs);
+  text-align: center;
+}
+
+.invite-ticket__spark {
+  display: block;
+  font-size: 2rem;
+  line-height: 1;
+  filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.25));
+  animation: emojiBounce 0.6s cubic-bezier(0.34, 1.4, 0.64, 1) 0.5s backwards;
+}
+
+.invite-ticket__eyebrow {
+  margin: 0;
+  font-size: clamp(0.95rem, 3.8vw, 1.1rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.invite-ticket__headline {
+  margin: 0;
+  font-size: clamp(2rem, 8vw, 2.6rem);
+  line-height: 1;
+}
+
+.invite-ticket__facts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--finale-space-sm);
+}
+
+.invite-ticket__fact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--finale-space-xs);
+  min-height: 92px;
+  padding: 14px 12px;
+  border: var(--border-thick);
+  border-radius: var(--radius-md);
+  box-shadow: var(--finale-panel-shadow);
+  text-align: center;
+}
+
+.invite-ticket__fact--date {
+  background: var(--lego-blue);
+}
+
+.invite-ticket__fact--place {
+  background: var(--lego-green);
+}
+
+.invite-ticket__fact-icon {
+  flex-shrink: 0;
+  font-size: 1.75rem;
+  line-height: 1;
+  filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.2));
+}
+
+.invite-ticket__fact-text {
+  font-size: clamp(1rem, 3.8vw, 1.15rem);
+  line-height: 1.1;
+}
+
+.invite-ticket__signature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 18px;
+  text-align: center;
+}
+
+.invite-ticket__signature-name {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: clamp(1.28rem, 5.2vw, 1.58rem);
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+  color: var(--lego-black);
+}
+
+.invite-ticket__signature-highlight {
+  --sticker-fill: var(--lego-orange);
+  --sticker-stroke: 1.75px;
+  --sticker-drop: 3px;
+  color: var(--sticker-fill);
+  text-shadow:
+    calc(-1 * var(--sticker-stroke)) calc(-1 * var(--sticker-stroke)) 0 var(--lego-black),
+    var(--sticker-stroke) calc(-1 * var(--sticker-stroke)) 0 var(--lego-black),
+    calc(-1 * var(--sticker-stroke)) var(--sticker-stroke) 0 var(--lego-black),
+    var(--sticker-stroke) var(--sticker-stroke) 0 var(--lego-black),
+    0 calc(-1 * var(--sticker-stroke)) 0 var(--lego-black),
+    0 var(--sticker-stroke) 0 var(--lego-black),
+    calc(-1 * var(--sticker-stroke)) 0 0 var(--lego-black),
+    var(--sticker-stroke) 0 0 var(--lego-black),
+    var(--sticker-drop) var(--sticker-drop) 0 var(--lego-black);
+}
+
+.invite-ticket__signature-number {
+  --sticker-fill: var(--lego-red);
+  --sticker-stroke: 1.75px;
+  --sticker-drop: 3px;
+  color: var(--sticker-fill);
+  font-weight: inherit;
+  text-shadow:
+    calc(-1 * var(--sticker-stroke)) calc(-1 * var(--sticker-stroke)) 0 var(--lego-black),
+    var(--sticker-stroke) calc(-1 * var(--sticker-stroke)) 0 var(--lego-black),
+    calc(-1 * var(--sticker-stroke)) var(--sticker-stroke) 0 var(--lego-black),
+    var(--sticker-stroke) var(--sticker-stroke) 0 var(--lego-black),
+    0 calc(-1 * var(--sticker-stroke)) 0 var(--lego-black),
+    0 var(--sticker-stroke) 0 var(--lego-black),
+    calc(-1 * var(--sticker-stroke)) 0 0 var(--lego-black),
+    var(--sticker-stroke) 0 0 var(--lego-black),
+    var(--sticker-drop) var(--sticker-drop) 0 var(--lego-black);
+}
+
+.invite-ticket__ps {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--finale-space-sm);
+  padding: 16px;
+}
+
+.invite-ticket__ps-badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  height: 48px;
+  padding: 0 10px;
+  border: var(--border-thick);
+  border-radius: var(--radius-md);
+  background: var(--lego-orange);
+  font-size: 0.95rem;
+  box-shadow: var(--finale-panel-shadow);
+}
+
+.invite-ticket__ps-text {
+  margin: 0;
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: clamp(0.98rem, 3.6vw, 1.06rem);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--lego-black);
+  text-align: left;
+}
+
+@media (min-width: 420px) {
+  .invite-ticket__facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.finale-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--finale-space-xs);
+  margin-top: var(--finale-space-md);
+  animation: fadeUp 0.45s ease 0.85s backwards;
+}
+
+.finale-actions__error {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--lego-red);
+}
+
+.invite-download-button:disabled {
+  opacity: 0.72;
+  cursor: wait;
+  transform: none;
+}
+
+.game-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.game-bg__brick,
+.game-bg__star {
+  position: absolute;
+  display: block;
+  border: 2px solid var(--lego-black);
+  border-radius: 4px;
+  opacity: 0.22;
+}
+
+.game-bg__brick {
+  width: 28px;
+  height: 16px;
+}
+
+.game-bg__brick--1 {
+  top: 8%;
+  left: 6%;
+  background: var(--lego-red);
+  animation: floatBrick 4s ease-in-out infinite;
+}
+
+.game-bg__brick--2 {
+  top: 18%;
+  right: 8%;
+  background: var(--lego-blue);
+  animation: floatBrick 5s ease-in-out 0.5s infinite;
+}
+
+.game-bg__brick--3 {
+  bottom: 22%;
+  left: 10%;
+  background: var(--lego-green);
+  animation: floatBrick 4.5s ease-in-out 1s infinite;
+}
+
+.game-bg__brick--4 {
+  bottom: 12%;
+  right: 12%;
+  background: var(--lego-orange);
+  animation: floatBrick 5.5s ease-in-out 0.3s infinite;
+}
+
+.game-bg__brick--5 {
+  top: 42%;
+  left: 4%;
+  width: 20px;
+  height: 12px;
+  background: var(--lego-yellow);
+  animation: floatBrick 6s ease-in-out 0.8s infinite;
+}
+
+.game-bg__star {
+  width: 12px;
+  height: 12px;
+  background: var(--lego-yellow);
+  border-radius: 50%;
+  border-width: 2px;
+}
+
+.game-bg__star--1 {
+  top: 30%;
+  right: 5%;
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+.game-bg__star--2 {
+  bottom: 35%;
+  left: 7%;
+  animation: twinkle 2.4s ease-in-out 0.4s infinite;
+}
+
+.game-bg__star--3 {
+  top: 55%;
+  right: 15%;
+  animation: twinkle 1.8s ease-in-out 0.7s infinite;
+}
+
+.finale-confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  overflow: hidden;
+}
+
+.finale-confetti__piece {
+  position: absolute;
+  top: -12px;
+  width: 8px;
+  height: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+  animation: confettiFall 4s linear infinite;
+}
+
+.app-shell--game {
+  position: relative;
+  z-index: 1;
+}
+
+.app-shell--game > :not(.game-bg):not(.finale-confetti):not(.background-music-toggle) {
+  position: relative;
+  z-index: 2;
+}
+
+.app-shell--finale {
+  background-color: #ffe566;
 }
 
 .slide-image {
@@ -268,9 +994,10 @@ img {
 
 .team-section-title {
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   margin-bottom: 10px;
   text-align: center;
+  color: var(--lego-black);
 }
 
 .actions-row {
@@ -308,10 +1035,10 @@ img {
 
 .invite-banner__label {
   font-family: var(--font-display);
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--lego-red);
+  color: var(--lego-black);
   margin: 0 0 4px;
 }
 
@@ -331,8 +1058,8 @@ img {
 
 .invite-banner__date {
   font-family: var(--font-display);
-  font-size: 1.15rem;
-  color: var(--lego-blue);
+  font-size: 1.2rem;
+  color: var(--lego-black);
 }
 
 .invite-banner__place {
@@ -393,6 +1120,10 @@ img {
   pointer-events: none;
 }
 
+.skill-avatar__helmet-layer {
+  pointer-events: none;
+}
+
 .avatar-card__role {
   margin: 12px 0 0;
   font-family: var(--font-display);
@@ -435,20 +1166,40 @@ img {
 }
 
 .emoji-choice:hover {
-  transform: scale(1.08);
+  transform: scale(1.12) rotate(-4deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .lego-button--pulse,
+  .slide-card--celebrate .avatar-preview-wrap,
+  .slide-card--finale {
+    animation: none;
+  }
 }
 
 .progress-bar {
   width: 100%;
   max-width: 480px;
   margin-bottom: 16px;
+  padding-right: 56px;
+  box-sizing: border-box;
 }
 
 .progress-bar__label {
   font-family: var(--font-display);
-  font-size: 0.9rem;
+  font-size: 1rem;
   margin-bottom: 8px;
   text-align: center;
+  color: var(--lego-black);
+  animation: levelFlash 0.55s ease;
 }
 
 .progress-bar__track {
@@ -462,10 +1213,17 @@ img {
   background: rgba(0, 0, 0, 0.15);
   border: 2px solid var(--lego-black);
   border-radius: 3px;
+  transform-origin: center bottom;
+  transition: background 0.25s ease;
 }
 
 .progress-bar__block--filled {
   background: var(--lego-red);
+  animation: blockFill 0.35s ease backwards;
+}
+
+.progress-bar__block--latest {
+  animation: blockFill 0.35s ease backwards, blockPulse 0.8s ease 0.2s 2;
 }
 
 .skill-bg {
@@ -476,6 +1234,34 @@ img {
   background-size: cover;
   background-position: center;
   pointer-events: none;
+}
+
+.background-music-toggle {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  z-index: 20;
+  width: 48px;
+  height: 48px;
+  border: var(--border-thick);
+  border-radius: var(--radius-md);
+  background: var(--lego-white);
+  color: var(--lego-black);
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 var(--lego-black);
+  transition: transform 0.1s ease;
+}
+
+.background-music-toggle:hover {
+  transform: translateY(-1px);
+}
+
+.background-music-toggle:active {
+  transform: translateY(1px);
+  box-shadow: 2px 2px 0 var(--lego-black);
 }
 
 @media (max-width: 420px) {
@@ -491,17 +1277,17 @@ img {
   }
 
   .slide-subtitle {
-    font-size: 0.92rem;
-  }
-
-  .lego-button {
-    min-height: 48px;
     font-size: 1rem;
   }
 
+  .lego-button {
+    min-height: 52px;
+    font-size: 1.1rem;
+  }
+
   .lego-input {
-    min-height: 48px;
-    font-size: 1.05rem;
+    min-height: 52px;
+    font-size: 1.3rem;
   }
 
   .image-choice {
@@ -519,7 +1305,7 @@ img {
   }
 
   .image-choice span {
-    font-size: 0.78rem;
+    font-size: 0.95rem;
   }
 
   .emoji-picker {
@@ -538,7 +1324,7 @@ img {
   }
 
   .progress-bar__label {
-    font-size: 0.82rem;
+    font-size: 0.92rem;
   }
 
   .invite-banner__title {
@@ -547,6 +1333,43 @@ img {
 
   .invite-banner__date {
     font-size: 1rem;
+  }
+
+  .slide-card--finale {
+    padding: 20px 14px 18px;
+  }
+
+  .finale-stack {
+    gap: var(--finale-space-sm);
+  }
+
+  .slide-card--finale .slide-title {
+    font-size: clamp(1.2rem, 6vw, 1.55rem);
+  }
+
+  .invite-ticket {
+    padding: var(--finale-space-sm);
+  }
+
+  .invite-ticket__section--facts {
+    margin-top: var(--finale-space-md);
+  }
+
+  .invite-ticket__headline {
+    font-size: clamp(1.75rem, 8vw, 2.2rem);
+  }
+
+  .invite-ticket__fact {
+    min-height: 84px;
+    padding: 12px 10px;
+  }
+
+  .invite-ticket__fact-text {
+    font-size: 0.98rem;
+  }
+
+  .invite-ticket__ps-text {
+    font-size: 0.94rem;
   }
 
   .avatar-card {

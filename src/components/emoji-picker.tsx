@@ -7,12 +7,13 @@ type EmojiPickerProps = {
 
 export function EmojiPicker({ onSelect }: EmojiPickerProps) {
   return (
-    <div className="emoji-picker">
-      {moodOptions.map((option) => (
+    <div className="emoji-picker emoji-picker--animated">
+      {moodOptions.map((option, index) => (
         <button
           key={option.id}
           type="button"
           className="emoji-choice"
+          style={{ animationDelay: `${index * 0.06}s` }}
           aria-label={option.label}
           onClick={() => onSelect(option.id)}
         >

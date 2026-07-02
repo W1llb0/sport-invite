@@ -5,6 +5,7 @@ type SlideLayoutProps = {
   subtitle?: string;
   children: ReactNode;
   backgroundImage?: string | null;
+  className?: string;
 };
 
 export function SlideLayout({
@@ -12,7 +13,9 @@ export function SlideLayout({
   subtitle,
   children,
   backgroundImage,
+  className,
 }: SlideLayoutProps) {
+  const cardClassName = className ? `slide-card ${className}` : 'slide-card';
   return (
     <>
       {backgroundImage && (
@@ -21,10 +24,10 @@ export function SlideLayout({
           style={{ backgroundImage: `url(${backgroundImage})` }}
         />
       )}
-      <div className="slide-card">
+      <div className={cardClassName}>
         <h1 className="slide-title">{title}</h1>
         {subtitle && <p className="slide-subtitle">{subtitle}</p>}
-        {children}
+        <div className="slide-content">{children}</div>
       </div>
     </>
   );

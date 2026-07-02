@@ -73,28 +73,163 @@ function DefaultArms({ torsoTop }: { torsoTop: number }): ReactElement {
   );
 }
 
-function HockeyStick({ torsoTop, handY }: { torsoTop: number; handY: number }): ReactElement {
-  const shaftX = 116;
-  const shaftTop = torsoTop + 2;
-  const bladeY = 180;
+const hockeyStickGeometry = {
+  shaftX: 131,
+  shaftJoinY: 148,
+  bladeLeft: 127,
+  bladeRight: 154,
+  bladeTop: 161,
+  bladeBottom: 171,
+} as const;
+
+function HockeyStickBlade(): ReactElement {
+  const { shaftX, shaftJoinY, bladeLeft, bladeRight, bladeTop, bladeBottom } = hockeyStickGeometry;
+  return (
+    <path
+      d={`M ${shaftX - 3} ${shaftJoinY}
+          L ${shaftX + 2} ${shaftJoinY}
+          L ${shaftX + 2} ${bladeTop}
+          L ${bladeRight} ${bladeTop}
+          L ${bladeRight} ${bladeBottom}
+          L ${bladeLeft} ${bladeBottom}
+          L ${bladeLeft} ${bladeTop}
+          L ${shaftX - 3} ${bladeTop} Z`}
+      fill="#111"
+      stroke={stroke}
+      strokeWidth="1.6"
+      strokeLinejoin="round"
+    />
+  );
+}
+
+function HockeyStickShaft({
+  handX,
+  handY,
+}: {
+  handX: number;
+  handY: number;
+}): ReactElement {
+  const { shaftX, shaftJoinY } = hockeyStickGeometry;
   return (
     <g>
-      <rect x="86" y={bladeY} width="48" height="8" rx="2" fill="#1a1a1a" stroke={stroke} strokeWidth="1.8" />
-      <rect x={shaftX} y={shaftTop} width="7" height={bladeY - shaftTop + 4} rx="2" fill="#C9A227" stroke={stroke} strokeWidth="1.8" />
-      <rect x={shaftX} y={shaftTop} width="7" height="12" rx="2" fill="#fff" opacity="0.35" />
-      <circle cx={shaftX + 3.5} cy={handY} r="6.5" fill={skinColor} stroke={stroke} strokeWidth="2" />
+      <line
+        x1={handX}
+        y1={handY}
+        x2={shaftX}
+        y2={shaftJoinY - 2}
+        stroke="#B8860B"
+        strokeWidth="6"
+        strokeLinecap="round"
+      />
+      <line
+        x1={handX}
+        y1={handY}
+        x2={shaftX}
+        y2={shaftJoinY - 2}
+        stroke="#F0D890"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        opacity="0.55"
+      />
+      <circle cx={handX} cy={handY} r="5.5" fill={skinColor} stroke={stroke} strokeWidth="2" />
+    </g>
+  );
+}
+
+function HockeyHelmet({ skin }: { skin: Skin | null }): ReactElement {
+  const sideInset = skin === 'ears' ? 10 : 13;
+  const left = headBox.x + sideInset;
+  const right = headBox.x + headBox.w - sideInset;
+  const width = right - left;
+  const centerX = headBox.x + headBox.w / 2;
+  const browY = headBox.y + 23;
+  const cageTop = browY + 2;
+  const cageBottom = headBox.y + headBox.h - 8;
+  const shellColor = '#252525';
+  const domeRx = width / 2 - 3;
+  const domeRy = 18;
+  const cageInset = 5;
+  const barCount = 3;
+  return (
+    <g>
+      <path
+        d={`M ${left + 4} ${browY}
+            A ${domeRx} ${domeRy} 0 0 1 ${right - 4} ${browY}
+            Q ${centerX} ${browY + 5}, ${left + 4} ${browY} Z`}
+        fill={shellColor}
+        stroke={stroke}
+        strokeWidth="2"
+      />
+      <rect
+        x={left + cageInset}
+        y={cageTop}
+        width={width - cageInset * 2}
+        height={cageBottom - cageTop}
+        rx="5"
+        fill="none"
+        stroke={stroke}
+        strokeWidth="2"
+      />
+      {Array.from({ length: barCount }, (_, index) => {
+        const barX = left + cageInset + 6 + (index * (width - cageInset * 2 - 12)) / (barCount - 1);
+        return (
+          <line
+            key={`helmet-v-${barX}`}
+            x1={barX}
+            y1={cageTop + 3}
+            x2={barX}
+            y2={cageBottom - 3}
+            stroke={stroke}
+            strokeWidth="1.5"
+          />
+        );
+      })}
+      {Array.from({ length: barCount }, (_, index) => {
+        const barY = cageTop + 5 + (index * (cageBottom - cageTop - 10)) / (barCount - 1);
+        return (
+          <line
+            key={`helmet-h-${barY}`}
+            x1={left + cageInset + 2}
+            y1={barY}
+            x2={right - cageInset - 2}
+            y2={barY}
+            stroke={stroke}
+            strokeWidth="1.4"
+          />
+        );
+      })}
     </g>
   );
 }
 
 function HockeyArms({ torsoTop }: { torsoTop: number }): ReactElement {
-  const freeHandY = torsoTop + 38;
-  const stickHandY = torsoTop + 22;
+  const freeHandY = torsoTop + 44;
+  const stickHandY = torsoTop + 32;
+  const stickHandX = 116;
   return (
     <g>
-      <rect x="28" y={torsoTop} width="14" height={freeHandY - torsoTop} rx="3" fill={skinColor} stroke={stroke} strokeWidth="2" />
-      <circle cx="35" cy={freeHandY} r="6.5" fill={skinColor} stroke={stroke} strokeWidth="2" />
-      <rect x="104" y={torsoTop} width="14" height={stickHandY - torsoTop + 2} rx="3" fill={skinColor} stroke={stroke} strokeWidth="2" />
+      <rect
+        x="44"
+        y={torsoTop + 2}
+        width="12"
+        height={freeHandY - torsoTop - 4}
+        rx="3"
+        fill={skinColor}
+        stroke={stroke}
+        strokeWidth="2"
+      />
+      <circle cx="50" cy={freeHandY} r="6" fill={skinColor} stroke={stroke} strokeWidth="2" />
+      <rect
+        x="104"
+        y={torsoTop + 4}
+        width="12"
+        height={stickHandY - torsoTop}
+        rx="3"
+        fill={skinColor}
+        stroke={stroke}
+        strokeWidth="2"
+      />
+      <HockeyStickShaft handX={stickHandX} handY={stickHandY} />
     </g>
   );
 }
@@ -212,15 +347,21 @@ function AvatarFigure({
   const hipColor = isFootball ? '#237841' : '#1a1a1a';
   const legColor = isFootball ? '#fff' : '#1a1a1a';
   const torsoTop = neckTop + neckHeight;
-  const hockeyStickHandY = torsoTop + 22;
   const torsoPoints = isHockey
     ? `52,${torsoTop} 108,${torsoTop} 114,136 46,136`
     : `48,${torsoTop} 112,${torsoTop} 118,136 42,136`;
   return (
     <svg viewBox="0 0 160 210" className="skill-avatar__figure" aria-hidden="true">
       <g className="skill-avatar__figure-body">
+      {isHockey && <HockeyStickBlade />}
       <rect x="46" y="150" width="26" height="34" rx="2" fill={legColor} stroke={stroke} strokeWidth="2" />
       <rect x="88" y="150" width="26" height="34" rx="2" fill={legColor} stroke={stroke} strokeWidth="2" />
+      {isHockey && (
+        <>
+          <rect x="46" y="153" width="26" height="5" fill="#fff" stroke={stroke} strokeWidth="1" />
+          <rect x="88" y="153" width="26" height="5" fill="#fff" stroke={stroke} strokeWidth="1" />
+        </>
+      )}
       <rect x="42" y="138" width="76" height="14" rx="2" fill={hipColor} stroke={stroke} strokeWidth="2" />
       {isFootball && (
         <>
@@ -274,19 +415,33 @@ function AvatarFigure({
         <DefaultArms torsoTop={torsoTop} />
       )}
       <rect x="72" y={neckTop - 3} width="16" height={neckHeight + 4} fill={skinColor} stroke={stroke} strokeWidth="2" />
-      <image
-        href={headImage}
-        x={headBox.x}
-        y={headBox.y}
-        width={headBox.w}
-        height={headBox.h}
-        preserveAspectRatio="xMidYMax meet"
-      />
-      {isHockey && <HockeyStick torsoTop={torsoTop} handY={hockeyStickHandY} />}
+      {!isHockey && (
+        <image
+          href={headImage}
+          x={headBox.x}
+          y={headBox.y}
+          width={headBox.w}
+          height={headBox.h}
+          preserveAspectRatio="xMidYMax meet"
+        />
+      )}
       {skill === 'books' && <BookProp />}
       {skill === 'chess' && <ChessBoardProp />}
       {isFootball && <FootballBall />}
       </g>
+      {isHockey && (
+        <g className="skill-avatar__helmet-layer">
+          <image
+            href={headImage}
+            x={headBox.x}
+            y={headBox.y}
+            width={headBox.w}
+            height={headBox.h}
+            preserveAspectRatio="xMidYMax meet"
+          />
+          <HockeyHelmet skin={skin} />
+        </g>
+      )}
       {isSmart && (
         <g className="skill-avatar__glasses-layer">
           <Glasses skin={skin} />

@@ -3,6 +3,7 @@ import { SlideLayout } from '../components/slide-layout';
 import { ChoiceButtons } from '../components/choice-buttons';
 import { EmojiPicker } from '../components/emoji-picker';
 import { AvatarPreview } from '../components/avatar-preview';
+import { FinaleSlide } from '../components/finale-slide';
 import {
   footballHeroOptions,
   footballTeamOptions,
@@ -371,12 +372,15 @@ export function SlidesRenderer({ state, dispatch }: SlidesRendererProps) {
 
     case 13:
       return (
-        <SlideLayout title={`Ты отлично справился, ${state.nickname}!`}>
+        <SlideLayout
+          title={`Ты отлично справился, ${state.nickname}!`}
+          className="slide-card--celebrate"
+        >
           <AvatarPreview state={state} />
           <div className="actions-row">
             <button
               type="button"
-              className="lego-button lego-button--green"
+              className="lego-button lego-button--green lego-button--pulse"
               onClick={goNext}
             >
               Открыть приглашение
@@ -386,21 +390,7 @@ export function SlidesRenderer({ state, dispatch }: SlidesRendererProps) {
       );
 
     case 14:
-      return (
-        <SlideLayout title="Ура! Ты приглашён!">
-          <div className="invite-card">
-            <img src={imagePaths.invite66} alt="Приглашение Lev birthday" />
-          </div>
-          <div className="invite-banner">
-            <p className="invite-banner__label">Приглашение</p>
-            <p className="invite-banner__title">День Рождения</p>
-            <div className="invite-banner__details">
-              <span className="invite-banner__date">07 июля · 15:00</span>
-              <span className="invite-banner__place">Тольятти, ЛАДА-Ресорт</span>
-            </div>
-          </div>
-        </SlideLayout>
-      );
+      return <FinaleSlide />;
 
     default:
       return null;
