@@ -859,6 +859,56 @@ img {
   transform: none;
 }
 
+.invite-save-preview {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--finale-space-sm);
+  padding: var(--finale-space-md);
+  background: rgb(0 0 0 / 0.82);
+}
+
+.invite-save-preview__close {
+  position: absolute;
+  top: max(1rem, env(safe-area-inset-top));
+  right: max(1rem, env(safe-area-inset-right));
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 3px solid #fff;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.45);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.invite-save-preview__hint {
+  margin: 0;
+  max-width: 22rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: center;
+  color: #fff;
+}
+
+.invite-save-preview__image {
+  width: min(100%, 24rem);
+  max-height: min(70vh, 36rem);
+  object-fit: contain;
+  border: 4px solid #fff;
+  border-radius: 1rem;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.35);
+  -webkit-touch-callout: default;
+  user-select: auto;
+}
+
 .game-bg {
   position: fixed;
   inset: 0;

@@ -1,12 +1,23 @@
 import { useRef, useState, type ReactElement } from 'react';
 import { SlideLayout } from './slide-layout';
 import { imagePaths } from '../config/slides';
-import { downloadElementAsImage } from '../utils/download-element-as-image';
+import {
+  downloadElementAsImage,
+  revokeInviteImageBlobUrl,
+} from '../utils/download-element-as-image';
 
 export function FinaleSlide(): ReactElement {
   const inviteRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const [downloadError, setDownloadError] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const handleClosePreview = (): void => {
+    if (previewUrl) {
+      revokeInviteImageBlobUrl(previewUrl);
+    }
+    setPreviewUrl(null);
+  };
 
   const handleDownloadInvite = async (): Promise<void> => {
     if (!inviteRef.current || isDownloading) {
@@ -15,10 +26,13 @@ export function FinaleSlide(): ReactElement {
     setIsDownloading(true);
     setDownloadError(null);
     try {
-      await downloadElementAsImage({
+      const result = await downloadElementAsImage({
         element: inviteRef.current,
         fileName: 'lev-birthday-invite.png',
       });
+      if (result.kind === 'preview') {
+        setPreviewUrl(result.blobUrl);
+      }
     } catch {
       setDownloadError('Не удалось сохранить картинку. Попробуй ещё раз.');
     } finally {
@@ -110,6 +124,31 @@ export function FinaleSlide(): ReactElement {
           </p>
         )}
       </div>
+      {previewUrl && (
+        <div
+          className="invite-save-preview"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Сохранение приглашения"
+        >
+          <button
+            type="button"
+            className="invite-save-preview__close"
+            onClick={handleClosePreview}
+            aria-label="Закрыть"
+          >
+            ✕
+          </button>
+          <p className="invite-save-preview__hint">
+            Нажми и удержи картинку, затем выбери «Сохранить в Фото»
+          </p>
+          <img
+            className="invite-save-preview__image"
+            src={previewUrl}
+            alt="Приглашение на день рождения Лева"
+          />
+        </div>
+      )}
     </SlideLayout>
   );
 }
