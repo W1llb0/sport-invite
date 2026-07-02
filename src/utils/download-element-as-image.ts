@@ -1,4 +1,4 @@
-import html2canvas from 'html2canvas';
+import { toBlob } from 'html-to-image';
 
 type DownloadElementAsImageParams = {
   element: HTMLElement;
@@ -11,25 +11,46 @@ export type SaveInviteImageResult =
   | { kind: 'preview'; blobUrl: string };
 
 const PNG_MIME_TYPE = 'image/png';
+const EXPORTING_CLASS_NAME = 'is-exporting';
 
 function normalizePngFileName(fileName: string): string {
   return fileName.toLowerCase().endsWith('.png') ? fileName : `${fileName}.png`;
 }
 
-function canvasToPngBlob(canvas: HTMLCanvasElement): Promise<Blob> {
-  return new Promise((resolve, reject) => {
-    canvas.toBlob(
-      (blob) => {
-        if (blob) {
-          resolve(blob);
-          return;
-        }
-        reject(new Error('Failed to create PNG blob'));
-      },
-      PNG_MIME_TYPE,
-      1,
-    );
-  });
+async function waitForImages(element: HTMLElement): Promise<void> {
+  const images = Array.from(element.querySelectorAll('img'));
+  await Promise.all(
+    images.map(
+      (image) =>
+        new Promise<void>((resolve) => {
+          if (image.complete && image.naturalWidth > 0) {
+            resolve();
+            return;
+          }
+          image.addEventListener('load', () => resolve(), { once: true });
+          image.addEventListener('error', () => resolve(), { once: true });
+        }),
+    ),
+  );
+}
+
+async function renderElementToPngBlob(element: HTMLElement): Promise<Blob> {
+  await document.fonts.ready;
+  await waitForImages(element);
+  element.classList.add(EXPORTING_CLASS_NAME);
+  try {
+    const blob = await toBlob(element, {
+      backgroundColor: '#ffffff',
+      pixelRatio: Math.min(window.devicePixelRatio || 1, 2),
+      cacheBust: true,
+    });
+    if (!blob) {
+      throw new Error('Failed to render invite image');
+    }
+    return blob;
+  } finally {
+    element.classList.remove(EXPORTING_CLASS_NAME);
+  }
 }
 
 function isIosDevice(): boolean {
@@ -82,43 +103,18 @@ function triggerBlobDownload(blob: Blob, fileName: string): void {
   }, 10_000);
 }
 
-function createPreviewBlobUrl(blob: Blob): string {
-  return URL.createObjectURL(blob);
-}
-
 export async function downloadElementAsImage({
   element,
   fileName,
 }: DownloadElementAsImageParams): Promise<SaveInviteImageResult> {
-  await document.fonts.ready;
-  const images = element.querySelectorAll('img');
-  await Promise.all(
-    Array.from(images).map(
-      (image) =>
-        new Promise<void>((resolve) => {
-          if (image.complete) {
-            resolve();
-            return;
-          }
-          image.addEventListener('load', () => resolve(), { once: true });
-          image.addEventListener('error', () => resolve(), { once: true });
-        }),
-    ),
-  );
-  const canvas = await html2canvas(element, {
-    backgroundColor: '#ffcf00',
-    scale: Math.min(window.devicePixelRatio, 2),
-    useCORS: true,
-    logging: false,
-  });
-  const blob = await canvasToPngBlob(canvas);
+  const blob = await renderElementToPngBlob(element);
   const safeFileName = normalizePngFileName(fileName);
   const hasShared = await sharePngFile(blob, safeFileName);
   if (hasShared) {
     return { kind: 'shared' };
   }
   if (isIosDevice()) {
-    return { kind: 'preview', blobUrl: createPreviewBlobUrl(blob) };
+    return { kind: 'preview', blobUrl: URL.createObjectURL(blob) };
   }
   triggerBlobDownload(blob, safeFileName);
   return { kind: 'downloaded' };

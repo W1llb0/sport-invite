@@ -607,6 +607,14 @@ img {
   align-items: stretch;
 }
 
+.finale-stack.is-exporting,
+.finale-stack.is-exporting * {
+  animation: none !important;
+  transition: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
 .slide-card--finale .invite-card {
   margin-bottom: 0;
   box-shadow: var(--finale-panel-shadow);
