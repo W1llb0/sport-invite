@@ -92,7 +92,7 @@ export function FinaleSlide({ state }: FinaleSlideProps): ReactElement {
                 <div className="invite-ticket__fact invite-ticket__fact--date">
                   <InviteCalendarIcon />
                   <span className="invite-ticket__fact-text invite-ticket__fact-text--date sticker-text sticker-text--md sticker-text--white">
-                    07 июля · 15:00
+                    07 июля · 17:00
                   </span>
                 </div>
                 <div className="invite-ticket__fact invite-ticket__fact--place">
